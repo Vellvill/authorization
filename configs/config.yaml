@@ -1,0 +1,10 @@
+---
+
+listen:
+  port: 8080
+db:
+  name: postgres
+  password: postgres
+  port: 5432
+  host: localhost
+  db_name: postgres
