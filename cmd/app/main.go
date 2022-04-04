@@ -1,7 +1,6 @@
 package main
 
 import (
-	config "auth/internal/config"
 	"auth/internal/server"
 	"flag"
 	"github.com/ilyakaznacheev/cleanenv"
@@ -19,7 +18,7 @@ func init() {
 func main() {
 	flag.Parse()
 
-	conf := config.GetConfig()
+	conf := server.GetConfig()
 
 	if err := cleanenv.ReadConfig(configPath, conf); err != nil {
 		_, err = cleanenv.GetDescription(conf, nil)
@@ -28,7 +27,9 @@ func main() {
 		}
 	}
 
-	if err := server.Start(conf); err != nil {
+	s := server.New(conf)
+	if err := s.Start(); err != nil {
 		log.Fatal(err)
 	}
+
 }

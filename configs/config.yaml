@@ -1,10 +1,6 @@
 ---
 
-listen:
-  port: 8080
-db:
-  name: postgres
-  password: postgres
-  port: 5432
-  host: localhost
-  db_name: postgres
+port: 8090
+log_level: debug
+store:
+  dsn: "postgresql://postgres:postgres@localhost:5432/auth"
