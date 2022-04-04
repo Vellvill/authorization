@@ -1,6 +1,5 @@
 ---
-
 port: 8090
 log_level: debug
 store:
-  dsn: "postgresql://postgres:postgres@localhost:5432/auth"
+  dsn: "host=localhost dbname=restapi_dev sslmode=disable"
