@@ -2,10 +2,12 @@ package server
 
 import (
 	store "auth/internal/store"
+	"context"
 	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/sirupsen/logrus"
 	"io"
+	"log"
 	"net/http"
 )
 
@@ -57,11 +59,12 @@ func (s *APIServer) configureRouter() {
 
 func (s *APIServer) configureStore() error {
 	st := store.New(s.config.Store)
-	if err := st.Open(); err != nil {
-		return err
+	err := st.NewClient(context.Background())
+	if err != nil {
+		log.Fatal(err)
 	}
 
-	s.store = st
+	s.logger.Info("db connected")
 
 	return nil
 }
