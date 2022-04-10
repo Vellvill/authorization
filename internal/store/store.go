@@ -46,14 +46,15 @@ func (s *Store) NewClient(ctx context.Context) (err error) { //Пул req'ов, 
 	return nil
 }
 
-func (s *Store) MigrateDatabse(conn *pgx.Conn) (int32, error) {
+// MigrateDatabase ...
+func (s *Store) MigrateDatabase(conn *pgx.Conn, migrationsPath string) (int32, error) {
 
 	migrator, err := migrate.NewMigrator(context.Background(), conn, "schema_version")
 	if err != nil {
 		return 0, err
 	}
 
-	err = migrator.LoadMigrations("./migrations")
+	err = migrator.LoadMigrations(migrationsPath)
 	if err != nil {
 		return 0, err
 	}
@@ -71,6 +72,8 @@ func (s *Store) MigrateDatabse(conn *pgx.Conn) (int32, error) {
 	return ver, nil
 }
 
+func (s *Store) Close() {}
+
 // User ...
 func (s *Store) User() *UserRepository {
 	if s.UserRepository != nil {
@@ -83,3 +86,5 @@ func (s *Store) User() *UserRepository {
 
 	return s.UserRepository
 }
+
+func (s *Store) CLose() {}

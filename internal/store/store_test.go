@@ -1,4 +1,4 @@
-package store
+package store_test
 
 import (
 	"os"
@@ -6,13 +6,15 @@ import (
 )
 
 var (
-	DSN string
+	DSN            string
+	MigrationsPath string
 )
 
 func TestMain(m *testing.M) {
-	DSN = os.Getenv("DATABASE_URL")
-	if DSN == "" {
-		DSN = "postgresql://postgres:12345@localhost:5432/postgres"
+	DSN, MigrationsPath = os.Getenv("DATABASE_URL"), os.Getenv("MIGRATIONS")
+	if DSN == "" || MigrationsPath == "" {
+		DSN = "postgresql://timofey:12345@localhost:5432/restapi_test"
+		MigrationsPath = "./migrations_test"
 	}
 
 	os.Exit(m.Run())

@@ -3,3 +3,4 @@ port: 8090
 log_level: debug
 store:
   dsn: "postgresql://timofey:12345@localhost:5432/restapi_dev"
+  migrations_path: "./migrations"

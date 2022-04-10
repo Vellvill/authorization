@@ -71,7 +71,7 @@ func (s *APIServer) configureStore() error {
 		log.Fatalf("Unable to acquire a database connection: %v\n", err)
 	}
 
-	ver, err := st.MigrateDatabse(conn.Conn())
+	ver, err := st.MigrateDatabase(conn.Conn(), s.config.Store.MigrationsPath)
 	if err != nil {
 		log.Fatal(err)
 	}
