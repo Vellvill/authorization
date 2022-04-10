@@ -24,7 +24,10 @@ func (r *UserRepository) Create(u *model.User) (*model.User, error) {
 	
 `
 
-	if err := r.store.Pool.QueryRow(context.Background(), q, u.Email, u.EncryptedPassword).Scan(&u.ID); err != nil {
+	if err := r.store.Pool.QueryRow(context.Background(), q, u.Email, u.EncryptedPassword).
+		Scan(
+			&u.ID,
+		); err != nil {
 		if pgErr, ok := err.(*pgconn.PgError); ok {
 			newErr := fmt.Errorf(fmt.Sprintf(
 				"SQL Error: %s, Detail: %s, Where: %s, SQLState: %s", pgErr.Message, pgErr.Detail, pgErr.Where, pgErr.SQLState()))
@@ -46,7 +49,11 @@ func (r *UserRepository) FindByEmail(email string) (*model.User, error) {
 	FROM users
 	WHERE email = $1
 `
-	if err := r.store.Pool.QueryRow(context.Background(), q, email).Scan(&u.ID, &u.Email, &u.EncryptedPassword); err != nil {
+	if err := r.store.Pool.QueryRow(context.Background(), q, email).
+		Scan(
+			&u.ID,
+			&u.Email,
+			&u.EncryptedPassword); err != nil {
 		if pgErr, ok := err.(*pgconn.PgError); ok {
 			newErr := fmt.Errorf(fmt.Sprintf(
 				"SQL Error: %s, Detail: %s, Where: %s, SQLState: %s", pgErr.Message, pgErr.Detail, pgErr.Where, pgErr.SQLState()))
