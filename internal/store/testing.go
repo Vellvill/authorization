@@ -25,8 +25,7 @@ func TestStore(t *testing.T, databaseURL, migrations string) (*Store, func(...st
 			if _, err := s.Pool.Exec(context.Background(), q); err != nil {
 				t.Fatal(err)
 			}
-
-			s.Pool.Close()
 		}
+		s.Pool.Close()
 	}
 }
