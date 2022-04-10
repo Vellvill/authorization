@@ -3,9 +3,11 @@ package store
 import (
 	"auth/internal/utils"
 	"context"
+	"fmt"
+	"github.com/jackc/pgx/v4"
 	"github.com/jackc/pgx/v4/pgxpool"
+	"github.com/jackc/tern/migrate"
 	_ "github.com/lib/pq"
-	"log"
 	"time"
 )
 
@@ -38,10 +40,35 @@ func (s *Store) NewClient(ctx context.Context) (err error) { //Пул req'ов, 
 	}, 5, 5*time.Second)
 
 	if err = s.Pool.Ping(ctx); err != nil {
-		log.Fatal(err)
+		return fmt.Errorf("Can't ping db")
 	}
 
 	return nil
+}
+
+func (s *Store) MigrateDatabse(conn *pgx.Conn) (int32, error) {
+
+	migrator, err := migrate.NewMigrator(context.Background(), conn, "schema_version")
+	if err != nil {
+		return 0, err
+	}
+
+	err = migrator.LoadMigrations("./migrations")
+	if err != nil {
+		return 0, err
+	}
+
+	err = migrator.Migrate(context.Background())
+	if err != nil {
+		return 0, err
+	}
+
+	ver, err := migrator.GetCurrentVersion(context.Background())
+	if err != nil {
+		return 0, err
+	}
+
+	return ver, nil
 }
 
 // User ...

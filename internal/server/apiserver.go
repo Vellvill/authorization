@@ -37,7 +37,7 @@ func (s *APIServer) Start() error {
 		return err
 	}
 
-	s.logger.Info("starting api server")
+	s.logger.Info("Starting api server")
 
 	return http.ListenAndServe(fmt.Sprintf(":%s", s.config.Port), s.router)
 }
@@ -61,10 +61,26 @@ func (s *APIServer) configureStore() error {
 	st := store.New(s.config.Store)
 	err := st.NewClient(context.Background())
 	if err != nil {
+		return err
+	}
+
+	s.logger.Info("Db connected")
+
+	conn, err := st.Pool.Acquire(context.Background())
+	if err != nil {
+		log.Fatalf("Unable to acquire a database connection: %v\n", err)
+	}
+
+	ver, err := st.MigrateDatabse(conn.Conn())
+	if err != nil {
 		log.Fatal(err)
 	}
 
-	s.logger.Info("db connected")
+	s.logger.Infof("Migrations complete. Current schema version: %v\n", ver)
+
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	return nil
 }
